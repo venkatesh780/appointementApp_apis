@@ -45,7 +45,6 @@ async function addItems(data) {
     }
   );
   let response2 = await renderItemsToPage();
-  console.log(data);
 }
 function handleFormSubmission(e) {
   e.preventDefault();
@@ -63,6 +62,36 @@ function handleFormSubmission(e) {
   };
   addItems(data);
 }
-submitBtn.addEventListener("click", handleFormSubmission);
 
-// renderItemsToPage();
+async function handleEditDelete(e) {
+  e.preventDefault();
+
+  if (e.target.innerText === "Delete") {
+    let items = e.target.parentElement.innerText.split(" ");
+    let appointementsArr = await axios.get(
+      "https://crudcrud.com/api/2ac6bca2acf54022b8212376dca21487/appointments"
+    );
+    let appointements = appointementsArr.data;
+    let itemId;
+    appointements.forEach((item) => {
+      if (
+        item.name === items[0] &&
+        item.email === items[1] &&
+        item.phone === items[2]
+      ) {
+        itemId = item._id;
+      }
+    });
+    let response = await axios.delete(
+      "https://crudcrud.com/api/2ac6bca2acf54022b8212376dca21487/appointments/" +
+        itemId
+    );
+    renderItemsToPage();
+  } else if (e.target.innerText === "Edit") {
+    console.log("ready to edit");
+  }
+}
+submitBtn.addEventListener("click", handleFormSubmission);
+appointmentList.addEventListener("click", handleEditDelete);
+
+renderItemsToPage();

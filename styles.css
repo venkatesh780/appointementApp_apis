@@ -1,0 +1,33 @@
+.root {
+  padding: 10px;
+  background-color: bisque;
+}
+.main-heading {
+  text-align: center;
+}
+.list-heading {
+  text-align: center;
+}
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+}
+.form-container {
+  background-color: #fff;
+  padding: 10px;
+  height: 50vh;
+  border-radius: 10px;
+  width: 70%;
+}
+.list-container {
+  background-color: #fff;
+  padding: 10px;
+  height: 50vh;
+  border-radius: 10px;
+  width: 70%;
+}
+label,
+input {
+  display: block;
+}

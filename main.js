@@ -4,8 +4,6 @@ const appointmentList = document.getElementById("appointment-list");
 
 updateBtn.style.display = "none";
 
-// render items into page
-
 async function renderItemsToPage() {
   let responseArr = await axios.get(
     "https://crudcrud.com/api/2ac6bca2acf54022b8212376dca21487/appointments"
@@ -61,6 +59,37 @@ function handleFormSubmission(e) {
     date,
   };
   addItems(data);
+  document.getElementById("name").value = "";
+  document.getElementById("email").value = "";
+  document.getElementById("phone").value = "";
+  document.getElementById("date").value = "";
+
+  document.getElementById("name").focus();
+}
+
+async function updateItem(itemIndex, data) {
+  let { name, email, phone, date } = data;
+  let response = await axios.put(
+    "https://crudcrud.com/api/2ac6bca2acf54022b8212376dca21487/appointments/" +
+      itemIndex,
+    {
+      name,
+      email,
+      phone,
+      date,
+    }
+  );
+  renderItemsToPage();
+
+  document.getElementById("name").value = "";
+  document.getElementById("email").value = "";
+  document.getElementById("phone").value = "";
+  document.getElementById("date").value = "";
+
+  document.getElementById("name").focus();
+
+  submitBtn.style.display = "block";
+  updateBtn.style.display = "none";
 }
 
 async function handleEditDelete(e) {
@@ -88,7 +117,45 @@ async function handleEditDelete(e) {
     );
     renderItemsToPage();
   } else if (e.target.innerText === "Edit") {
-    console.log("ready to edit");
+    let items = e.target.parentElement.innerText.split(" ");
+    document.getElementById("name").value = items[0];
+    document.getElementById("email").value = items[1];
+    document.getElementById("phone").value = items[2];
+
+    submitBtn.style.display = "none";
+    updateBtn.style.display = "block";
+    updateBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+
+      let appointementsArr = await axios.get(
+        "https://crudcrud.com/api/2ac6bca2acf54022b8212376dca21487/appointments"
+      );
+
+      let appointements = appointementsArr.data;
+      let itemId;
+      appointements.forEach((item) => {
+        if (
+          item.name === items[0] &&
+          item.email === items[1] &&
+          item.phone === items[2]
+        ) {
+          itemId = item._id;
+        }
+      });
+
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const phone = document.getElementById("phone").value;
+      const date = document.getElementById("date").value;
+
+      let data = {
+        name,
+        email,
+        phone,
+        date,
+      };
+      updateItem(itemId, data);
+    });
   }
 }
 submitBtn.addEventListener("click", handleFormSubmission);
